@@ -23,10 +23,46 @@
   font-size: calc(10px + 2vmin);
   color: white;
 }
+.card-stats {
+  cursor: pointer;
+}
+
+.card-stats:hover {
+  border: 2px solid #00b4ae;
+}
+.scroll
+{
+  max-height: 600px;
+  overflow-y: scroll;
+}
+#login-form {
+  min-height: 380px;
+  border: 1px solid #00b4ae;
+  border-radius: 4px;
+}
 
 .App-link {
   color: #61dafb;
 }
+
+/*navbar css*/
+.upper-case {
+  text-transform: uppercase;
+  font-size: 12px;
+  /* color: rgb(253, 252, 252); */
+}
+.aside_div {
+  overflow-y: auto;
+}
+.nav-link:hover {
+  color: white !important;
+  background-color: rgb(0, 178, 169) !important;
+
+}
+.nav-link > i:hover {
+  color: white !important;
+}
+/*end navbar*/
 
 @keyframes App-logo-spin {
   from {
