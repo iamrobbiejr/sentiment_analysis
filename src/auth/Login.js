@@ -1,23 +1,15 @@
 import React, {useEffect,useState, useRef} from 'react';
-import {Link } from 'react-router-dom';
 import Form from 'react-validation/build/form';
 import Input from 'react-validation/build/input';
 import CheckButton from 'react-validation/build/button';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import { css } from "@emotion/react";
-import { makeStyles } from '@material-ui/core/styles';
+// import { css } from "@emotion/react";
+// import { makeStyles } from '@material-ui/core/styles';
 import Spinner from 'reactjs-simple-spinner';
+import {Link} from "react-router-dom";
 
 
-const useStyles = makeStyles((theme) => ({
-    root: {
-        display: 'flex',
-        '& > * + *': {
-            marginLeft: theme.spacing(2),
-        },
-    },
-}));
 
 
 const required = (value) => {
@@ -39,19 +31,16 @@ const Login = (props) => {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const [loading, setLoading] = useState(false);
-    const [message, setMessage] = useState('');
+    // const [message, setMessage] = useState('');
     const [usernameError, setUsernameError] = useState('');
     const [passwordError, setPasswordError] = useState('');
 
 
-    const override = css`
-      display: block;
-      margin: 0 auto;
-    `;
+
 
     useEffect(() => {
         setLoading(false);
-        setMessage('');
+
     }, []);
 
     const removeUsernameErrors = () =>{
@@ -73,8 +62,6 @@ const Login = (props) => {
     const handleLogin = (e) => {
         e.preventDefault();
 
-        setMessage('');
-
         form.current.validateAll();
         setLoading(true);
 
@@ -82,16 +69,18 @@ const Login = (props) => {
             //call auth service login
             toast('Login In Progress');
             setLoading(false);
+        }else{
+            setLoading(false);
+            toast.error('Fill in details')
         }
 
-
     }
-    const classes = useStyles();
+    // const classes = useStyles();
     return(
         <div>
             <ToastContainer
                 position="top-center"
-                autoClose={2000}
+                autoClose={1000}
                 hideProgressBar
                 newestOnTop
                 closeOnClick
@@ -124,7 +113,7 @@ const Login = (props) => {
                                 <div className="card card-login">
                                     <Form onSubmit={handleLogin} ref={form} className="form container" id="login-form">
                                         <center>
-                                            <p><a href="#" className="logo2">Sentiment Analysis</a></p>
+                                            <h3 className="heading mt-5">Sentiment Analysis</h3>
                                         </center>
 
 
@@ -186,7 +175,16 @@ const Login = (props) => {
                                             </button>
                                         </center>
                                        <hr/>
+                                        <center>
+                                            <Link
+                                                className="btn btn-warning btn-sm ld-ext-right mb-5"
+                                                id="loginUser" to={'/'}>
+                   <span style={{fontSize: 16}}>
+                  Go Back To Store Front
+                  </span>
 
+                                            </Link>
+                                        </center>
                                         <CheckButton style={{display: "none"}} ref={checkBtn} />
                                     </Form>
                                 </div>

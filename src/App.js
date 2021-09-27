@@ -1,6 +1,6 @@
 import './App.css';
-import React, { useEffect } from "react";
-import { BrowserRouter, Switch, Route } from "react-router-dom";
+import React from "react";
+import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 
 // import pages
 import Home from './Home';
@@ -13,17 +13,17 @@ function App() {
 
   return (
       <div>
-        <BrowserRouter>
+        <Router>
           <Switch>
-            <Route path = {['/'] } component = { Home }/>
-            <Route exact path = {['/admin'] } component = { Login }/>
-              <Route exact path = {['/logout'] } component = { Login }/>
-            <Route path = { '/dashboard' } component = { Dashboard }/>
-            <Route path = { '/analysis' } component = { Analysis }/>
-              <Route path = { '/products' } component = { Analysis }/>
-            <Route path = { '/product-review' } component = { ProductReview }/>
+            <Route exact path = '/' component = { Home }/>
+            <Route exact path = '/admin'  component = { Login }/>
+              <Route exact path = '/logout' component = { Login }/>
+            <Route exact path = '/dashboard'  component = { Dashboard }/>
+            <Route exact path ='/analysis'  component = { Analysis }/>
+              <Route exact path =  '/products'  component = { Analysis }/>
+            <Route exact path='/product-review' component = { ProductReview }/>
           </Switch>
-        </BrowserRouter>
+        </Router>
       </div>
   );
 }

@@ -8,7 +8,7 @@ const SideBar = () => {
         <div className="sidebar" data-color="purple" data-background-color="white">
             <div className="logo">
                 <a
-                    href="#"
+                    href="/"
                     className="simple-text logo-normal"
                     style={{marginRight: 40}}
                 >

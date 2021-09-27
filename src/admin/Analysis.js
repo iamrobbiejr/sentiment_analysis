@@ -1,11 +1,28 @@
-import React, {useEffect} from "react";
+import React from "react";
+import SideBar from "../components/SideBar";
 
 
 const Analysis = () => {
 
     return(
         <>
-            <h1>Analysis working</h1>
+            <SideBar/>
+            <div id="main-content" className="main-panel ps-container ps-theme-default">
+                <div className="content">
+                    <div className="container-fluid">
+                        <ul className="breadcrumb">
+                            Analysis
+                        </ul>
+                        <div className="row mt">
+                            <div className="container-fluid col-md-12">
+                                <div className="row mt ">
+                                    <h1>Working</h1>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </>
     )
 }
