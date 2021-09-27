@@ -1,0 +1,98 @@
+.myConn .custom-bar {
+    display: flex;
+    user-select: none;
+    width: 36%;
+}
+
+.myConn .custom-bar .step {
+    text-align: center;
+    width: 100%;
+    position: relative;
+}
+
+.myConn .custom-bar .step p {
+    font-weight: 500;
+    font-size: 12px;
+    /* color: #000; */
+    margin-bottom: 8px;
+}
+
+.custom-bar .step .bullet {
+    height: 30px;
+    width: 30px;
+    border: 2px solid gray;
+    display: inline-block;
+    border-radius: 50%;
+    position: relative;
+    transition: 0.2s;
+    font-weight: 500;
+    font-size: 17px;
+    line-height: 25px;
+}
+
+.custom-bar .step .bullet.active {
+    border-color: #00b4ae;
+    background: linear-gradient(to right, #da8cff, #00b4ae);
+}
+
+.custom-bar .step .bullet span {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+.custom-bar .step .bullet.active span {
+    display: none;
+}
+
+.custom-bar .step .bullet:before,
+.custom-bar .step .bullet:after {
+    position: absolute;
+    content: "";
+    bottom: 11px;
+    right: -51px;
+    height: 3px;
+    width: 44px;
+    background: grey;
+}
+
+.custom-bar .step .bullet.active:after {
+    background: linear-gradient(to right, #da8cff, #00b4ae);
+    transform: scaleX(0);
+    transform-origin: left;
+    animation: animate 0.3s linear forwards;
+}
+
+@keyframes animate {
+    100% {
+        transform: scaleX(1);
+    }
+}
+
+.custom-bar .step:last-child .bullet:before,
+.custom-bar .step:last-child .bullet:after {
+    display: none;
+}
+
+.custom-bar .step p.active {
+    color: #00b4ae;
+    transition: 0.2s linear;
+}
+
+.custom-bar .step .check {
+    position: absolute;
+    left: 50%;
+    top: 70%;
+    font-size: 15px;
+    transform: translate(-50%, -50%);
+    display: none;
+}
+
+.custom-bar .step .check.active {
+    display: block;
+    color: #fff;
+}
+
+.progress-bar {
+    background: linear-gradient(to right, #da8cff, #00b4ae);
+}
