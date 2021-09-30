@@ -12,6 +12,7 @@ import re
 def decontracted(phrase):
     # specific
     phrase = re.sub(r"won't", "will not", phrase)
+    phrase = re.sub(r"don't", "do not", phrase)
     phrase = re.sub(r"can\'t", "can not", phrase)
 
     # general
@@ -95,6 +96,26 @@ def get_products():
     return jsonify(products)
 
 
+@app.route('/product', methods=['POST'])
+def product():
+    # Output message if something goes wrong...
+    msg = 'none'
+    # Check if "email" and "password" POST requests exist (user submitted form)
+    req = request.json
+    if request.method == 'POST':
+        # Create variables for easy access
+        prod_id = req['id']
+        # Check if account exists using MySQL
+        cursor = mysql.get_db().cursor()
+        cursor.execute('SELECT * FROM products WHERE productId = %s', prod_id)
+        # Fetch one record and return result
+        single_product = cursor.fetchone()
+        # print(account)
+        return jsonify(single_product)
+    # Show response(if any)
+    return jsonify(msg)
+
+
 @app.route('/users', methods=['GET'])
 def get_users():
     cursor = mysql.get_db().cursor()
@@ -143,6 +164,25 @@ def get_reviews():
     return jsonify(reviews)
 
 
+@app.route('/product_reviews', methods=['POST'])
+def product_reviews():
+    # Output message if something goes wrong...
+    msg = 'none'
+    # Check if "email" and "password" POST requests exist (user submitted form)
+    req = request.json
+    if request.method == 'POST':
+        # Create variables for easy access
+        prod_id = req['id']
+        # Check if account exists using MySQL
+        cursor = mysql.get_db().cursor()
+        cursor.execute('SELECT * FROM reviews WHERE productId = %s', prod_id)
+        # Fetch one record and return result
+        reviews = cursor.fetchall()
+        # print(account)
+        return jsonify(reviews)
+    # Show response(if any)
+    return jsonify(msg)
+
 @app.route('/review', methods=['POST'])
 def post_review():
     """
@@ -151,25 +191,26 @@ def post_review():
     # print(request.json)
     try:
         product_review = request.json
-        print(product_review['productId'])
+        print("id", product_review['review'])
         product_id = product_review['productId']
         review = product_review['review']
         review_text = decontracted(review)
+        deconText = decontracted(review)
+        print("decontracted done: " + review_text)
         review_text = clean_text(review)
+        print("clean done: " + review_text)
         test_vect = vectorized.transform(([review_text]))
+        print("vectorized done: ")
+        print(test_vect)
         my_prediction = model.predict(test_vect)
-        print("prediction: " + my_prediction)
-        sql = """INSERT INTO reviews (productId, review, isGood) VALUES ('%s', '%s', '%s')""" % (
-            product_id, review, my_prediction)
+        print("prediction: ", my_prediction[0])
+        sql = '''INSERT INTO reviews (productId, review, isGood) VALUES ('%s', '%s', '%s')''' % (
+            product_id, deconText, my_prediction[0])
         cursor = mysql.get_db().cursor()
         cursor.execute(sql)
         mysql.get_db().commit()
         cursor.close()
-        return {
-            'status': 200,
-            'msg': 'Successful',
-            'prediction': my_prediction
-        }
+        return 'successful'
     except Exception as e:
         print("Problem inserting into db: " + str(e))
         return "False"
