@@ -2,9 +2,70 @@ import time
 from flask import Flask, request
 from flask.json import jsonify
 from flaskext.mysql import MySQL
+from flask_cors import CORS
+# Importing essential libraries
+import pickle
+from bs4 import BeautifulSoup
+import re
 
+
+def decontracted(phrase):
+    # specific
+    phrase = re.sub(r"won't", "will not", phrase)
+    phrase = re.sub(r"can\'t", "can not", phrase)
+
+    # general
+    phrase = re.sub(r"n\'t", " not", phrase)
+    phrase = re.sub(r"\'re", " are", phrase)
+    phrase = re.sub(r"\'s", " is", phrase)
+    phrase = re.sub(r"\'d", " would", phrase)
+    phrase = re.sub(r"\'ll", " will", phrase)
+    phrase = re.sub(r"\'t", " not", phrase)
+    phrase = re.sub(r"\'ve", " have", phrase)
+    phrase = re.sub(r"\'m", " am", phrase)
+    return phrase
+
+
+stopwords = set(['br', 'the', 'i', 'me', 'my', 'myself', 'we', 'our', 'ours', 'ourselves', 'you', "you're", "you've", \
+                 "you'll", "you'd", 'your', 'yours', 'yourself', 'yourselves', 'he', 'him', 'his', 'himself', \
+                 'she', "she's", 'her', 'hers', 'herself', 'it', "it's", 'its', 'itself', 'they', 'them', 'their', \
+                 'theirs', 'themselves', 'what', 'which', 'who', 'whom', 'this', 'that', "that'll", 'these', 'those', \
+                 'am', 'is', 'are', 'was', 'were', 'be', 'been', 'being', 'have', 'has', 'had', 'having', 'do', 'does', \
+                 'did', 'doing', 'a', 'an', 'the', 'and', 'but', 'if', 'or', 'because', 'as', 'until', 'while', 'of', \
+                 'at', 'by', 'for', 'with', 'about', 'against', 'between', 'into', 'through', 'during', 'before',
+                 'after', \
+                 'above', 'below', 'to', 'from', 'up', 'down', 'in', 'out', 'on', 'off', 'over', 'under', 'again',
+                 'further', \
+                 'then', 'once', 'here', 'there', 'when', 'where', 'why', 'how', 'all', 'any', 'both', 'each', 'few',
+                 'more', \
+                 'most', 'other', 'some', 'such', 'only', 'own', 'same', 'so', 'than', 'too', 'very', \
+                 's', 't', 'can', 'will', 'just', 'don', "don't", 'should', "should've", 'now', 'd', 'll', 'm', 'o',
+                 're', \
+                 've', 'y', 'ain', 'aren', "aren't", 'couldn', "couldn't", 'didn', "didn't", 'doesn', "doesn't", 'hadn', \
+                 "hadn't", 'hasn', "hasn't", 'haven', "haven't", 'isn', "isn't", 'ma', 'mightn', "mightn't", 'mustn', \
+                 "mustn't", 'needn', "needn't", 'shan', "shan't", 'shouldn', "shouldn't", 'wasn', "wasn't", 'weren',
+                 "weren't", \
+                 'won', "won't", 'wouldn', "wouldn't"])
+
+
+def clean_text(sentence):
+    sentence = re.sub(r"http\S+", "", sentence)
+    sentence = BeautifulSoup(sentence, 'lxml').get_text()
+    sentence = decontracted(sentence)
+    sentence = re.sub("\S*\d\S*", "", sentence).strip()
+    sentence = re.sub('[^A-Za-z]+', ' ', sentence)
+    # https://gist.github.com/sebleier/554280
+    sentence = ' '.join(e.lower() for e in sentence.split() if e.lower() not in stopwords)
+    return sentence.strip()
+
+
+# Load the Multinomial Naive Bayes model and CountVectorized object from disk
+filename = 'model.pkl'
+model = pickle.load(open(filename, 'rb'))
+vectorized = pickle.load(open('vectorizer.pkl', 'rb'))
 
 app = Flask(__name__)
+CORS(app)
 
 # Change this to your secret key (can be anything, it's for extra protection)
 app.secret_key = 'secret'
@@ -93,14 +154,21 @@ def post_review():
         print(product_review['productId'])
         product_id = product_review['productId']
         review = product_review['review']
-        sql = """INSERT INTO reviews (productId, review) VALUES ('%s', '%s')""" % (product_id, review)
+        review_text = decontracted(review)
+        review_text = clean_text(review)
+        test_vect = vectorized.transform(([review_text]))
+        my_prediction = model.predict(test_vect)
+        print("prediction: " + my_prediction)
+        sql = """INSERT INTO reviews (productId, review, isGood) VALUES ('%s', '%s', '%s')""" % (
+            product_id, review, my_prediction)
         cursor = mysql.get_db().cursor()
         cursor.execute(sql)
         mysql.get_db().commit()
         cursor.close()
         return {
             'status': 200,
-            'msg': 'Successful'
+            'msg': 'Successful',
+            'prediction': my_prediction
         }
     except Exception as e:
         print("Problem inserting into db: " + str(e))

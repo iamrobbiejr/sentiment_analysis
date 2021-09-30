@@ -8,7 +8,7 @@ import 'react-toastify/dist/ReactToastify.css';
 // import { makeStyles } from '@material-ui/core/styles';
 import Spinner from 'reactjs-simple-spinner';
 import {Link} from "react-router-dom";
-
+import AuthService from "../services/AuthService";
 
 
 
@@ -67,8 +67,20 @@ const Login = (props) => {
 
         if (checkBtn.current.context._errors.length === 0){
             //call auth service login
-            toast('Login In Progress');
-            setLoading(false);
+            AuthService.loginUser(username,password)
+                .then(res => {
+                    console.log(res.status)
+                    toast('Login Successful');
+                    setLoading(false);
+                    props.history.push('/dashboard')
+
+                })
+                .catch(err => {
+                    console.log(err)
+                    toast.error('Login Failed');
+                    setLoading(false);
+                })
+
         }else{
             setLoading(false);
             toast.error('Fill in details')
