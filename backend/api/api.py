@@ -116,6 +116,50 @@ def product():
     return jsonify(msg)
 
 
+@app.route('/add_product', methods=['POST'])
+def add_product():
+    # Output message if something goes wrong...
+    msg = 'none'
+
+    req = request.json
+    if request.method == 'POST':
+        # Create variables for easy access
+        prod_name = req['name']
+        prod_brand = req['brand']
+        # Check if account exists using MySQL
+        sql = '''INSERT INTO products (name, brand) VALUES ('%s', '%s')''' % (
+            prod_name, prod_brand)
+        cursor = mysql.get_db().cursor()
+        cursor.execute(sql)
+        mysql.get_db().commit()
+        cursor.close()
+        # print(account)
+        return 'success'
+    # Show response(if any)
+    return jsonify(msg)
+
+
+@app.route('/delete_product', methods=['POST'])
+def delete_product():
+    # Output message if something goes wrong...
+    msg = 'none'
+
+    req = request.json
+    if request.method == 'POST':
+        # Create variables for easy access
+        prod_id = req['id']
+        # Check if account exists using MySQL
+        sql = '''DELETE FROM products WHERE productId = %s''' % prod_id
+        cursor = mysql.get_db().cursor()
+        cursor.execute(sql)
+        mysql.get_db().commit()
+        cursor.close()
+        # print(account)
+        return 'success'
+    # Show response(if any)
+    return jsonify(msg)
+
+
 @app.route('/users', methods=['GET'])
 def get_users():
     cursor = mysql.get_db().cursor()
