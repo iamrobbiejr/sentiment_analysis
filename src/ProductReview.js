@@ -48,6 +48,7 @@ const ProductReview = () => {
         setLoading(false);
         const id = localStorage.getItem('id');
         console.log(parseInt(id))
+        setId(parseInt(id))
 
         // get single product
         SentimentAnalysisService.get_product(parseInt(id))
@@ -84,7 +85,19 @@ const ProductReview = () => {
                     console.log(res)
                     toast('Post Successful');
                     setReview(' ');
-                    setLoading(false);
+                    //get reviews of product
+                    SentimentAnalysisService.get_product_reviews(id)
+                        .then(res => {
+                            console.log(res.data)
+                            setReviews(res.data)
+                            setLoading(false);
+                        })
+                        .catch(err => {
+                            console.log(err)
+                            setReviews([])
+                            setLoading(false);
+                        })
+
                     //load reviews
                 })
                 .catch(err => {

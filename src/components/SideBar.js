@@ -22,13 +22,6 @@ const SideBar = () => {
                     <li className="nav-item">
                         <Link active-class="active" className="nav-link" to="/dashboard">
                             <i className="material-icons">dashboard</i>
-                            <p>Dashboard</p>
-                        </Link>
-                    </li>
-
-                    <li className="nav-item">
-                        <Link className="nav-link" to="/analysis">
-                            <i className="fa fa-pie-chart"/>
                             <p>Analysis</p>
                         </Link>
                     </li>

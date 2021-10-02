@@ -7,7 +7,7 @@ import Home from './Home';
 import Login from "./auth/Login";
 import Dashboard from "./admin/Dashboard";
 import ProductReview from "./ProductReview";
-import Analysis from "./admin/Analysis";
+import Products from "./admin/Products";
 
 function App() {
 
@@ -19,8 +19,7 @@ function App() {
             <Route exact path = '/admin'  component = { Login }/>
               <Route exact path = '/logout' component = { Login }/>
             <Route exact path = '/dashboard'  component = { Dashboard }/>
-            <Route exact path ='/analysis'  component = { Analysis }/>
-              <Route exact path =  '/products'  component = { Analysis }/>
+              <Route exact path =  '/products'  component = { Products }/>
             <Route exact path='/product-review' component = { ProductReview }/>
           </Switch>
         </Router>
