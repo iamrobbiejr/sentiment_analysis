@@ -66,6 +66,39 @@ const get_product = async (id) => {
     return response
 }
 
+const delete_product = async (id) => {
+    const req = {"id": id}
+    let response;
+    await axios.post(baseUrl+'delete_product',req)
+        .then(res => {
+            console.log(res)
+            response = res;
+        })
+        .catch(err => {
+            console.log(err)
+            response = err
+        })
+
+    return response
+}
+
+const add_product =   async (name, brand) => {
+
+    const request = {'name': name, 'brand': brand}
+    let response;
+    await axios.post(baseUrl+'add_product', request)
+        .then(res => {
+            console.log(res)
+            response = res;
+        })
+        .catch(err => {
+            console.log(err)
+            response = err
+        })
+
+    return response
+}
+
 const get_products = async () => {
     let response;
     await axios.get(baseUrl+'products')
@@ -82,5 +115,5 @@ const get_products = async () => {
 }
 
 export default {
-    add_review , get_reviews, get_products, get_product_reviews, get_product
+    add_review , get_reviews, get_products, get_product_reviews, get_product,delete_product, add_product
 }

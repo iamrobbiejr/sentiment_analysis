@@ -5,7 +5,21 @@ import SentimentAnalysisService from "../services/SentimentAnalysisService";
 import Spinner from "reactjs-simple-spinner";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import Radio from '@mui/material/Radio';
+import RadioGroup from '@mui/material/RadioGroup';
+import FormControlLabel from '@mui/material/FormControlLabel';
+import FormControl from '@mui/material/FormControl';
+import FormLabel from '@mui/material/FormLabel';
 
+const required = (value) => {
+    if (!value) {
+        return (
+            <div className="error" >
+                This field is required!
+            </div>
+        );
+    }
+};
 
 let data = {
     labels: ['Bad', 'Good'],
@@ -30,12 +44,14 @@ const Dashboard = () => {
     const [month, setMonth] = useState('');
     const [loading, setLoading] = useState(false);
     const [show, setShow] = useState(false);
+    const [showButtons, setShowButtons] = useState(false);
     let [goodReviews, setGoodReviews] = useState(0);
     let [badReviews, setBadReviews] = useState(0);
     const [productName , setProductName] = useState(' ');
     useEffect(() => {
 
         setShow(false)
+        setShowButtons(false)
 
         const d = new Date();
         const n = d.getMonth();
@@ -54,6 +70,13 @@ const Dashboard = () => {
 
     }, [])
 
+    const handleChange = (e) => {
+        setMonth(e.target.value)
+        setShowButtons(true)
+        console.log(e.target.value)
+
+    }
+
     const showAnalysis = (id, name) => {
         setLoading(true);
         setProductName(name);
@@ -69,9 +92,9 @@ const Dashboard = () => {
 
 
                 res.data.map((i,j) => {
-                    console.log(labels[n])
-                    console.log(i[4].search(labels[n]))
-                    if (i[4].search(labels[n]) !== -1){
+                    console.log(month)
+                    console.log(i[4].search(month))
+                    if (i[4].search(month) !== -1){
                         if(i[3] == 0){
                             badReviews += 1
 
@@ -156,6 +179,24 @@ const Dashboard = () => {
                         </ul>
                         <div className="row mt">
                             <div className="container-fluid col-md-5 scroll">
+
+                                <FormControl component="fieldset">
+                                    <FormLabel component="legend">Select Month</FormLabel>
+                                    <RadioGroup  validations={[required]} onChange={handleChange} row aria-label="month" name="row-radio-buttons-group">
+                                        <FormControlLabel value="Jan" control={<Radio />} label="Jan" />
+                                        <FormControlLabel value="Feb" control={<Radio />} label="Feb" />
+                                        <FormControlLabel value="Mar" control={<Radio />} label="Mar" />
+                                        <FormControlLabel value="Apr" control={<Radio />} label="Apr" />
+                                        <FormControlLabel value="May" control={<Radio />} label="May" />
+                                        <FormControlLabel value="Jun" control={<Radio />} label="Jun" />
+                                        <FormControlLabel value="Jul" control={<Radio />} label="Jul" />
+                                        <FormControlLabel value="Aug" control={<Radio />} label="Aug" />
+                                        <FormControlLabel value="Sep" control={<Radio />} label="Sep" />
+                                        <FormControlLabel value="Oct" control={<Radio />} label="Oct" />
+                                        <FormControlLabel value="Nov" control={<Radio />} label="Nov" />
+                                        <FormControlLabel value="Dec" control={<Radio />} label="Dec" />
+                                    </RadioGroup>
+                                </FormControl>
                                 <table className="table table-striped table-responsive">
                                     <thead>
 
@@ -171,9 +212,13 @@ const Dashboard = () => {
                                                 <td> {i[1]}</td>
 
                                                 <td>
-                                                    <button onClick={() => showAnalysis(i[0], i[1])} className="btn btn-sm btn-primary rounded-pill">
-                                                        <i className="fa fa-line-chart" />&nbsp;Show Sentiment Analysis (Current Month)
-                                                    </button>
+                                                    {showButtons && (
+                                                        <button onClick={() => showAnalysis(i[0], i[1])} className="btn btn-sm btn-primary rounded-pill">
+                                                            <i className="fa fa-line-chart" />
+                                                            &nbsp;Show Sentiment Analysis
+                                                        </button>
+                                                    )}
+
                                                 </td>
                                             </tr>
                                         )
